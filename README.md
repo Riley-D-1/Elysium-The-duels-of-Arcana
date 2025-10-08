@@ -1,2 +1,3 @@
 # Elysium-The-duels-of-Arcana
-To be filled
+A text adventure all about battling wizards to death
+Think pokemon style duels in a magical text adventure world.
