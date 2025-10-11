@@ -25,7 +25,7 @@ game_array = [
     '| ❤️ Health : {Health}                                                            |', # Borders misaligning turn emojis into unicode maybe?
     '| 🔮 Mana   : {Mana}                                                              |',    
     '| 🪄  Type   : {Type}                                                             |',   
-    '| 🪙  Money:  {Money}                                                                             |',   
+    '| 🪙  Money:  {Money}                                                             |',   
     '+---------------------------------------------------------------------------------+',
 ]
 
@@ -36,7 +36,7 @@ class wizard:
         self.health = 100
         self.spell_list = {
         {"name":"heal spell","effect": "heal","mana_cost": 10 , "value": 12, "story":"Green particles shower around and your injuries are magically healed"},
-        {"name":"super_heal","effect": "heal","mana_cost": 50 , "value": 99, "story":""},
+        {"name":"super_heal","effect": "heal","mana_cost": 50 , "value": 99, "story":"You call a radient beam of gold upon you that heals all of your injuries"},
         {"name":"Vicious Mockery","effect": "damage","mana_cost": 5 , "value": 12, "story":"You scream an insult at your enemy indued with magical power."},
         {"name":"Inferno Strike","effect": "damage","mana_cost": 50 , "value": 12, "story":"The sky turns to a deep red above your enemy before a cylindrical force of orange power blasts your enemy with fire"},
         {"name":"Lighting Bolt","effect": "damage","mana_cost": 100 , "value": 12, "story":"The sky has deep grey stormclouds embued with magical energy that strike your enemy with an electric blast!"},
@@ -46,10 +46,8 @@ class wizard:
         {"name":"Wall of Stone","effect": "heal","mana_cost": 50 , "value": 50, "story":"A wall of stone grows from the ground covering you from the enemy, providing protection."},
         #{"name":"Animate","effect": "summon","mana_cost": 50 , "value": 50, "story":""}, (Difficult so maybe not )
         {"name":"Cloud of Daggers","effect": "damage_random","mana_cost": 50 , "value": 12, "story":"You send hundreds of magical daggers hurtling through the air towards your enemy"},
-        {"name":"fireball","effect": "heal","mana_cost": 50 , "value": 12, "story":""},
         {"name":"Magic Missile","effect": "damage","mana_cost": 50 , "value": 35, "story":"A magical dart sized object whistles through the air before exploding on your enemy"},
-        {"name":"Telekenisis","effect": "damage","mana_cost": 50 , "value": 35, "story":""},
-        {"name":"Sunburst","effect": "damage_time","mana_cost": 50 , "value": 50, "story":""},
+        {"name":"Sunburst","effect": "damage_time","mana_cost": 50 , "value": 50, "story":"A portal to the sun opens blasting your opponet with intense heat"},
         }
         self.learned_spells = []
         self.shield = 0
@@ -185,20 +183,27 @@ def start_game():
             print(f"Save {i} Found")
         else:
             pass
-    save_load_input = input(" 1: Load a save file \n 2: Create new \n 3:Quit\n Input: ")
+    save_load_input = input(" 1: Load a save file \n 2: Create new \n 3: Quit\n Input: ")
     if save_load_input == "1":
-        print('fill')
+        return save_slot
     elif save_load_input == "2":
-        print('fill')
+        print("WARNING: IF YOU PICK A SAVE SLOT WITH EXISTING DATA THE SAVE SLOT WILL BE OVERWRITTEN")
+        save_slot = int(input("What Save Slot would you like to use? (1, 2, 3 or 4)\n:"))
+        if save_slot == 1 or save_slot == 2 or save_slot == 3 or save_slot == 4:
+            return save_slot
+        else:
+            print("Not valid save slot")
+            exit()
     elif save_load_input == "3":
         exit()
     else:
         print("Invalid response")
         exit()
     #map.load()
+    
 
 def main_loop(map,intro_array):
-    start_game()
+    save_slot = start_game()
     User = Player()
     running = True
     while running:

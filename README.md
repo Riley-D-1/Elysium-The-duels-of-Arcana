@@ -12,8 +12,5 @@ However there is an exception to these extreme rules, The Sacred Duels of Arcana
 You are a young wizard, born into a world that fears what you are. Your journey begins at your coming of age with only a handful of basic spells. Will you rise through the duels learning powerful spells and challenge the council? Or will you uncover a deeper truth behind the ban?
 
 
-
-However many wizards have ignored these rules and will attack other wizards unprovoked in order to grow their magical skills and learn more powerful spells
-- 
 ## Rules/How to play
 You will be given all availble actions each round and must use input to navaiget around the mystical world.
