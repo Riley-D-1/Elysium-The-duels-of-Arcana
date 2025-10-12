@@ -35,4 +35,7 @@ pip install -r requirements.txt
 4. Run the program (depends on IDE but you can generally use the terminal command of python main.py)
 
 
-## Shout out to friend who shall not be named who helped with his example of fantasy text adv to fix problems like misalligning emojis 
+## Shout out to friends who helped with his example of a fantasy text adv to fix problems like misalligning emojis
+## Also credit to them and another friend for inspo for this project
+- https://github.com/Mitles1234/Miles-Cutting---Assesment-Task-2----OOP---SE
+- https://github.com/Tsunami014/Phoenix-Engine
