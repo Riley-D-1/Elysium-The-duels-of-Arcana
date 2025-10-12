@@ -1,6 +1,8 @@
 import os
 import time
 import random 
+from wcwidth import wcswidth
+
 
 intro_array = [
     '+----------------------------------------------------------------------------------------------------------------------------------------------------------+',
@@ -19,14 +21,18 @@ intro_array = [
 ]
 
 game_array = [
-    '+----------------------------------------------------------------------------------+',
-    '| {Name} {Title}                                                                   |', 
-    '|                                                                                  |', 
-    '| ❤️ Health : {Health}                                                            |', # Borders misaligning turn emojis into unicode maybe?
-    '| 🔮 Mana   : {Mana}                                                              |',    
-    '| 🪄  Type   : {Type}                                                             |',   
-    '| 🪙  Money:  {Money}                                                             |',   
-    '+---------------------------------------------------------------------------------+',
+    '+-------------------------------------+',
+    '| {self.name} {self.title}           |', 
+    '|                                    |', 
+    '| ❤️ Health: {self.health}/100      |', # Borders misaligning turn emojis into unicode maybe?
+    '| 🔮 Mana: {self.mana}/200          |',    
+    '| 🪙 Money:  {self.money}           |',  
+    '| 📖 Experience: Level {self.lvl}   |',  
+    '+------------------------------------+',
+]
+
+room_types= [
+    {"name":"grassland","art":"🌿"}
 ]
 
 map = []
@@ -57,17 +63,20 @@ class wizard:
 
     def learn_spells(self,spell_to_learn):
         # TO BE FIXED
-        #if spell_to_learn =
+        #if spell_to_learn = 
         self.learned_spells.append(spell_to_learn)
 
     def cast(self,spell,enemy,player):
+        # Params look like (class object of whoever called it, spell object from list and then enemy is the class of  target and player is yes or no if char is player controlled )
         # To be fixed
         if player == True:
             print(spell["story"])
-
-        #if spell =  (check for spell)
+        if spell in self.learned_spells:
+            # Fetch effect  and vaule with
+            effect = spell ["Effect"]
+            value = spell["Value"]
             if effect == "heal":
-                if (self.health+ value) > 100:
+                if (self.health + value) > 100:
                     self.health = 100
                 else:
                     self.health += value
@@ -80,13 +89,12 @@ class wizard:
             elif effect == "shield":
                 print("Shield of {vaule} applied for 1 round")
             #elif effect == "decay": (maybe we will see)
-            #    print()
+            #print()
             #elif effect == "decay": (Difficult to do so maybe not )
             #    print()
             else:
-                print("error spell type doesn't exist")
-                
-        
+                print("Error spell type doesn't exist")
+
 class Player(wizard):
     def __init__(self):
         super().__init__()
@@ -98,7 +106,7 @@ class Player(wizard):
         print()
     def level_up(self,level_up_amount):
         self.level += level_up_amount
-        
+        # Add fancy level up thing maybe?
 
 class challenger(wizard):
     def __init__(self,risk,difficulty):
@@ -124,30 +132,18 @@ class challenger(wizard):
             else:
                 self.runaway()
 
+def emoji_formatter():
+    print("filler")
+    # Need to work out how to use the wcs library friend recomended.
 
 def save(player, location,save_num):
     with open (f"Save:{save_num}.txt",'w') as file:
         file.write(player)
         file.write(location)
         file.write(map)
-def check_map(map):
-    detailed_map = []
-    for val in map:
-        if val == "t": # Tower
-            print("filler")
-        elif val == "g": # grassland
-            print("filler")
-        elif val == "r": # Road
-            print("filler")
-        elif val == "c": # City
-            print("filler")
-        elif val == "f": #Forrest
-            print("filler")
-        elif val  == "w": #water
-            print("filler")
-        elif val == "?": # Unknown
-            print("filler")
-        return detailed_map
+
+def map_update():
+    map
 
 def input_handler():
     print()
@@ -200,6 +196,8 @@ def start_game():
         print("Invalid response")
         exit()
     #map.load()
+    # TO CONTINUE MAYBE?
+    # What do i need to addd d d d 
     
 
 def main_loop(map,intro_array):
@@ -209,8 +207,6 @@ def main_loop(map,intro_array):
     while running:
         User.mana_restore(1)
         input()
-
-
 
 # Core function (Clean isnt it)
 main_loop(map,intro_array)
