@@ -13,7 +13,7 @@ You are a young wizard, born into a world that fears what you are. Your journey 
 
 ## Rules/How to play
 You will be given all availble actions each round and must use input to navaiget around the mystical world.
-
+You need to enter to corresponding number and complete duels to reach lvl 25 before searching for the council and finding the truth.
 
 
 ## Installation
