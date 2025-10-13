@@ -21,43 +21,25 @@ intro_array = [
     '+----------------------------------------------------------------------------------------------------------------------------------------------------------+'
 ]
 
-"""
-combat_array = [
-         '+--------------|Combat Status|--------------+',
-        f'| 🧙 {player.name} {player.title}          |',
-        f'| 💖 Health: {player.health}/100           |',
-        f'| 🔮 Mana: {player.mana}/200               |',
-        f'| 🛡️ Shield: {player.shield}               |',
-          |                                           |',
-        f'| 👾 {enemy.name} {enemy.title}            |',
-        f'| 💖 Health: {enemy.health}/100            |',
-        f'| 🔮 Mana: {enemy.mana}/200                |',
-        f'| 🛡️ Shield: {enemy.shield}                |',
-        '+--------------------------------------------+'
-]
-"""
 
 
 # Add all linked rooms to have working map
 # Technically works again and again with diffrent maps so that's cool :D
 room_info = [
-    {"name": "Waterfall",   "linked_rooms": ["Grasslands_1", "Forrest_1"]},
-    {"name": "Duel_arena",  "linked_rooms": ["Waterfall", "Grasslands_4"]},
-    {"name": "Forrest_1",   "linked_rooms": ["Waterfall", "Grasslands_4", "Grasslands_1"]},
+    {"name": "Waterfall",   "linked_rooms": ["Forrest_1"]},
+    {"name": "Duel_arena",  "linked_rooms": ["City"]},
+    {"name": "Forrest_1",   "linked_rooms": ["Waterfall","Grasslands_1","Grasslands_2","Mountain","Village"]},
     {"name": "Grasslands_4","linked_rooms": ["Duel_arena", "Forrest_1", "City", "Forrest_3"]},
-    {"name": "City",        "linked_rooms": ["Grasslands_4"]},
-
+    {"name": "City",        "linked_rooms": ["Grasslands_2","Duel_arena","Grasslands_3","Forrest_2"]},
     {"name": "Forrest_3",   "linked_rooms": ["Grasslands_4", "Grasslands_3"]},
-    {"name": "Grasslands_3","linked_rooms": ["Forrest_3", "Forrest_2"]},
-
-    {"name": "Grasslands_1","linked_rooms": ["Forrest_1", "Village"]},
-    {"name": "Village",     "linked_rooms": ["Grasslands_1", "Forrest_2", "Grasslands_2"]},
-    {"name": "Forrest_2",   "linked_rooms": ["Village", "Grasslands_3", "Mountain"]},
-    {"name": "Grasslands_2","linked_rooms": ["Village", "Volcano"]},
-
-    {"name": "Mountain",    "linked_rooms": ["Forrest_2", "Volcano"]},
-    {"name": "Volcano",     "linked_rooms": ["Mountain", "Grasslands_2", "Wizard_Tower"]},
-    {"name": "Wizard_Tower","linked_rooms": ["Volcano"]}
+    {"name": "Grasslands_3","linked_rooms": ["Village", "Forrest_2","City","Wizard_Tower"]},
+    {"name": "Grasslands_1","linked_rooms": ["Forrest_1", "Village","Mountain"]},
+    {"name": "Village",     "linked_rooms": ["Grasslands_1", "Forrest_1","Grasslands_3","Mountain"]},
+    {"name": "Forrest_2",   "linked_rooms": ["City", "Grasslands_3"]},
+    {"name": "Grasslands_2","linked_rooms": ["City", "Forrest_1"]},
+    {"name": "Mountain",    "linked_rooms": ["Volcano","Grasslands_1","Forrest_1","Village"]},
+    {"name": "Volcano",     "linked_rooms": ["Mountain"]},
+    {"name": "Wizard_Tower","linked_rooms": ["Grasslands_3"]}
 ]
 
 
@@ -112,9 +94,9 @@ class wizard:
         self.health = 100
         self.spell_list = [
         # Begginer spells
-        {"name":"heal spell","effect": "heal","mana_cost": 10 , "value": 25, "story":"Green particles shower around and your injuries are magically healed"},
+        {"name":"Heal Spell","effect": "heal","mana_cost": 10 , "value": 25, "story":"Green particles shower around and your injuries are magically healed"},
         {"name":"Shield","effect": "shield","mana_cost": 25 , "value": 50, "story":"A pulsing blue  circular dome covers you, providing protection"},
-        {"name":"Vicious Mockery","effect": "damage","mana_cost": 5 , "value": 12, "story":"You scream an insult at your enemy indued with magical power."},
+        {"name":"Vicious Mockery","effect": "damage","mana_cost": 0 , "value": 12, "story":"You scream an insult at your enemy indued with magical power."},
         {"name":"Inferno Strike","effect": "damage","mana_cost": 20 , "value": 15, "story":"The sky turns to a deep red above your enemy before a cylindrical force of orange power blasts your enemy with fire"},
         {"name":"Drain","effect": "damage", "mana_cost": 30, "value": 20, "story":"You pierce your enemy’s mind with telekensis causing damage."},
         # Intermediate (1)
@@ -132,9 +114,9 @@ class wizard:
         {"name":"Lighting Bolt","effect": "damage","mana_cost": 100 , "value": 55, "story":"The sky has deep grey stormclouds embued with magical energy that strike your enemy with an electric blast!"},
         ]
         self.learned_spells = [
-        {"name":"heal spell", "effect":"heal", "mana_cost":10, "value":25, "story":"Green particles shower around and your injuries are magically healed"},
+        {"name":"Heal Spell", "effect":"heal", "mana_cost":10, "value":25, "story":"Green particles shower around and your injuries are magically healed"},
         {"name":"Shield", "effect":"shield", "mana_cost":25, "value":50, "story":"A pulsing blue circular dome covers you, providing protection"},
-        {"name":"Vicious Mockery", "effect":"damage", "mana_cost":5, "value":12, "story":"You scream an insult at your enemy imbued with magical power."},
+        {"name":"Vicious Mockery", "effect":"damage", "mana_cost":0, "value":12, "story":"You scream an insult at your enemy imbued with magical power."},
         {"name":"Inferno Strike", "effect":"damage", "mana_cost":20, "value":15, "story":"The sky turns red before a cylindrical blast of fire hits your enemy"},
         {"name":"Drain", "effect":"damage", "mana_cost":30, "value":20, "story":"You pierce your enemy’s mind with telekinesis causing damage."}
     ]
@@ -152,22 +134,68 @@ class wizard:
             value = spell["value"]
             if effect == "heal":
                 if (self.health + value) > 100:
+                    fancy_print(f"{self.name} fully healed")
+                    print(" ")
                     self.health = 100
                 else:
+                    fancy_print(f"{self.name} healed by {value}")
+                    print(" ")
                     self.health += value
             elif effect == "damage":
-                enemy.health -= value
+                fancy_print(f"{value} Damage dealt to {enemy.name}")
+                print(" ")
+                damage = value
+                if enemy.shield != 0:
+                    enemy.shield -= damage
+                    fancy_print(f"{enemy.name}'s shield blocked {value} damage")
+                    print(" ")
+                else:
+                    enemy.health -= damage
             elif effect == "damage_random":
                 if value == 2:
-                    enemy.health -= random.randint(1,20) + 5
+                    damage = random.randint(1,20) + 5
+                    fancy_print(f"{damage} Damage dealt to {enemy.name}")
+                    print(" ")
+                    if enemy.shield != 0:
+                        enemy.shield -= damage
+                        fancy_print(f"{enemy.name}'s shield blocked {value} damage")
+                        print(" ")
+                    else:
+                        enemy.health -= damage
                 elif value == 3:
-                    enemy.health -= random.randint(1,35) + 10
+                    damage = random.randint(1,35) + 10
+                    fancy_print(f"{damage} Damage dealt to {enemy.name}")
+                    print(" ")
+                    if enemy.shield != 0:
+                        enemy.shield -= damage
+                        fancy_print(f"{enemy.name}'s shield blocked {value} damage")
+                        print(" ")
+                    else:
+                        enemy.health -= damage
                 elif value == 4:
-                    enemy.health -= random.randint(1,50) + 25
+                    damage = random.randint(1,50) + 25
+                    fancy_print(f"{damage} Damage dealt to {enemy.name}")
+                    print(" ")
+                    if enemy.shield != 0:
+                        enemy.shield -= damage
+                        fancy_print(f"{enemy.name}'s shield blocked {value} damage")
+                        print(" ")
+                    else:
+                        enemy.health -= damage
                 else:
-                    enemy.health -= random.randint(1,100) + 40
+                    damage = random.randint(1,100) + 40
+                    fancy_print(f"{damage} Damage dealt to {enemy.name}")
+                    print(" ")
+                    if enemy.shield != 0:
+                        enemy.shield -= damage
+                        fancy_print(f"{enemy.name}'s shield blocked {value} damage")
+                        print(" ")
+                    else:
+                        enemy.health -= damage
             elif effect == "shield":
-                print(f"Shield of {value} applied for 1 round")
+                fancy_print(f"{self.name} applied a shield of {value} for 1 round")
+                print(" ")
+                self.shield += value
             else:
                 print("Error spell type doesn't exist")
             if player == True:
@@ -204,6 +232,7 @@ class Player(wizard):
             return
         self.mana -= spell["mana_cost"]
         self.cast(spell, enemy, True)
+
     def stats(self):
         game_array = [
             '+-------------|Info Card|-------------+',
@@ -224,6 +253,7 @@ class Player(wizard):
     def level_up(self, level_up_amount=1):
         self.lvl += level_up_amount
         fancy_print(f"{self.name} leveled up to {self.lvl}")
+        print(" ")
         if self.lvl >= 5:
             print("You have learned intermediate spells!")
             self.learned_spells += [
@@ -250,7 +280,6 @@ class Player(wizard):
                 {"name":"Celestial Strike", "effect":"damage_random", "mana_cost":100, "value":5, "story":"Stars pelt down in radiant explosions"},
                 {"name":"Lightning Bolt", "effect":"damage", "mana_cost":100, "value":55, "story":"Stormclouds strike your enemy with electric fury"}
             ]      
-
 class challenger(wizard):
     def __init__(self,difficulty):
         super().__init__()
@@ -303,9 +332,9 @@ class challenger(wizard):
                 {"name":"Celestial Strike", "effect":"damage_random", "mana_cost":100, "value":5, "story":"Stars pelt down in radiant explosions"},
                 {"name":"Lightning Bolt", "effect":"damage", "mana_cost":100, "value":55, "story":"Stormclouds strike your enemy with electric fury"}
             ]
-    def attack(self):
+    def attack(self,enemy):
         self.shield_reset()
-        self.cast(random.choice(self.learned_spells))
+        self.cast(random.choice(self.learned_spells),enemy,False)
         
 def format_(text,width = 35):
     actual_width = wcswidth(text)
@@ -331,13 +360,11 @@ def map_update(room):
         "Duel_arena": "👑",
         "Mountain": "🗻",
         "Forrest_1": "🌲",
-        "Grasslands_4": "🌿",
         "City": "🏠",
-        "Forrest_3": "🌲",
-        "Grasslands_3": "🌿",
         "Grasslands_1": "🌿",
         "Village": "🏡",
         "Grasslands_2": "🌿",
+        "Grasslands_3": "🌿",
         "Forrest_2": "🌲",
         "Volcano": "🌋",
         "Wizard_Tower": "🔮"
@@ -347,13 +374,11 @@ def map_update(room):
     Waterfall = icons["Waterfall"]
     Duel_arena = icons["Duel_arena"]
     Forrest_1       = icons["Forrest_1"]
-    Grasslands_4    = icons["Grasslands_4"]
-    City            = icons["City"]
-    Forrest_3       = icons["Forrest_3"]
-    Grasslands_3    = icons["Grasslands_3"]
-    Grasslands_1    = icons["Grasslands_1"]
-    Village         = icons["Village"]
     Grasslands_2    = icons["Grasslands_2"]
+    City            = icons["City"]
+    Grasslands_1    = icons["Grasslands_1"]
+    Grasslands_3    = icons["Grasslands_3"]
+    Village         = icons["Village"]
     Forrest_2       = icons["Forrest_2"]
     Mountain      = icons["Mountain"]
     Volcano         = icons["Volcano"]
@@ -365,19 +390,20 @@ def map_update(room):
     # use {room name goes here} for the core rooms e.g {Main_Village}
     # Have to make the map 
     # Spaced weirdly to work
+    # Yes my map is horrible to look at and pretty poor to play but oh well
     map = [
-        f'+----------------------------------| Map |----------------------------------+',
-        f'|                      {Waterfall}                         {Duel_arena}                        |',
+        f'+-----------------------------------|Map|-----------------------------------+',
+        f'|                     {Waterfall}                          {Duel_arena}                        |',
         f'|                      │                           │                        |',
-        f'|           {Forrest_1}─────────┼───────────{Grasslands_4}─────────────{City}                        |',
-        f'|                      │                 {Forrest_3}────────┤                        |',
-        f'|                      │                          {Grasslands_3}                        |',
+        f'|                     {Forrest_1}───────────{Grasslands_2}─────────────{City}                        |',
+        f'|                      │                 {Forrest_2}────────┤                        |',
+        f'|                      │                           │                        |',
         f'|        {Grasslands_1}────────────┤                           │                        |',
-        f'|                      └─────────────┬───{Village}────────┴─{Forrest_2}                     |',
-        f'|                                    {Grasslands_2}               │                     |',
-        f'|                                    │          ┌─────┘                     |',
-        f'|                                   {Mountain}          │            ⬆              |',
-        f'|                     {Volcano}─────────────┘         {Wizard_Tower}            N              |',
+        f'|                      └─────────────┬───{Village}───────{Grasslands_3}                        |',
+        f'|                                    │             │                        |',
+        f'|                                    │       ┌─────┘                        |',
+        f'|                                   {Mountain}       │            ⬆                 |',
+        f'|                     {Volcano}─────────────┘      {Wizard_Tower}            N                 |',
         f'+---------------------------------------------------------------------------+',
     ]
 
@@ -413,12 +439,7 @@ def story(player,curr_room):
     if room == "Waterfall":
         fancy_print("You feel refreshed by the mist. You regain 10 mana.")
     elif room == "Duel_arena":
-        fancy_print("A challenger appears!")
-        fancy_print("You step into the Duel Arena.")
-        fancy_print("Only one will leave victorious...")
-        combat(player, challenger(random.randint(3,10)))
-        fancy_print("You return to the City.")
-        return room
+        duel_arena(player)
     elif room in ["Forrest_1", "Forrest_2", "Forrest_3"]:
         print("Dense trees crowd the path. Shadows twist between the branches.")
     elif room in ["Grasslands_1", "Grasslands_2", "Grasslands_3", "Grasslands_4"]:
@@ -434,11 +455,11 @@ def story(player,curr_room):
     elif room == "Volcano":
         fancy_print("The heat is intense. You lose 10 health.")
     elif room == "Wizard_Tower":
-        fancy_print("A looming tower pierces the sky—its windows flicker with arcane light.")
+        fancy_print("A looming tower pierces the sky, its windows flicker with arcane light.")
         wizard_tower(player)
     else:
-        fancy_print("You wander into the unknown...")
         fancy_print("You escaped the matrix. Restarting Matrix...")
+        clear_terminal()
         fancy_print("Restarting...")
         exit()
 
@@ -451,6 +472,7 @@ def open_save(save_num):
         player.mana = data["mana"]
         player.lvl = data["lvl"]
         room = data["room"]
+        player.learned_spells = data("learned_spells", player.learned_spells)
         fancy_print(f"Save {save_num} loaded.")
         return player, room
     except FileNotFoundError:
@@ -465,24 +487,50 @@ def save(player, save_num, room):
         "health": player.health,
         "mana": player.mana,
         "lvl": player.lvl,
-        "room": room
+        "room": room,
+        "learned_spells": player.learned_spells
+
     }
     with open(f"Save{save_num}.txt", "w") as file:
         json.dump(data, file)
 
+def combat_array(player,bot):
+    combat_array = [
+    '+------------|Combat Info|------------+',
+    format_(f"🧙   {player.name} {player.title}"),
+    format_(f"💖   Health: {player.health}/100"),
+    format_(f"🔮   Mana:   {player.mana}/200"),
+    format_(f"🧱   Shield: {player.shield}"),
+    format_(" "),  # Spacer line
+    format_(f"👾   {bot.name} {bot.title}"),
+    format_(f"💖   Health: {bot.health}/100"),
+    format_(f"🔮   Mana:   {bot.mana}/200"),
+    format_(f"🧱   Shield: {bot.shield}"),
+    '+-------------------------------------+'
+    ]
+    for val in combat_array:
+        print(val)
+
 def combat(player, bot):
     turn = "player"
     while player.health > 0 and bot.health > 0:
+        clear_terminal()
+        combat_array(player, bot)
+
         if turn == "player":
             player.combat(bot)
             turn = "bot"
         else:
-            bot.attack()
+            bot.attack(player)
             turn = "player"
+
+        time.sleep(2)
+    clear_terminal()
     if bot.health <= 0:
         fancy_print("You win the fight!")
         money = random.randint(1, 200)
         player.money += money
+        print(" ")
         fancy_print(f"You earned {money} gold.")
     else:
         fancy_print("You lose the fight...")
@@ -526,32 +574,54 @@ def start_game():
     
 
 def city(user):
-    print("You arrive in the bustling City of Elysium.")
+    print(" ")
     print("1. Visit the shop")
     print("2. Speak to the Council")
+    print("3. Exit")
     choice = input("Choose an action: ").strip()
     if choice == "1":
         shopkeeper("Elarion", "Arcane Emporium").interaction(user)
     elif choice == "2":
         council(user)
     else:
-        print("You wander the streets aimlessly.")
+        print("You leave the city ready to explore.")
 
 def village(user):
     fancy_print("You enter Obsidinia Village.")
     print("\n1. Enter the Duel Arena")
     print("2. Rest at the inn")
+    print("3. Exit")
     choice = input("Choose an action: ").strip()
     if choice == "1":
         duel_arena(user,challenger(random.randint(1,5)))
-    elif choice :
+    elif choice == "2" :
         print("You rest and recover your strength.")
         user.rest()
-def duel_arena(User):
-    fancy_print("You step into the Duel Arena... Only one will leave victorious...")
-    combat(User, challenger(random.randint(1,5)))
-    fancy_print("You return to the City.")
-    return "city"
+    else:
+        pass
+
+def duel_arena(player):
+    fancy_print("You step into the Duel Arena. Only one will leave victorious...")
+    print(" ")
+    combat(player, challenger(random.randint(3,10)))
+    dueling = True
+    while dueling:
+        print("\nWhat would you like to do next?")
+        print("1: Fight another challenger")
+        print("2: Return to the City")
+
+        choice = input("Input: ").strip()
+        if choice == "1":
+            player.rest()
+            fancy_print("You take a moment to recover. Health and mana restored.")   
+            print(" ")
+            fancy_print("You step into the Duel Arena. Only one will leave victorious...")
+            print(" ")
+            combat(player, challenger(random.randint(3,10))) 
+        else:
+            fancy_print("You leave for the city.") 
+            print(" ")
+            dueling = False
 
 def council(user):
     if user.lvl >= 25:
@@ -566,11 +636,11 @@ def wizard_tower(user):
     fancy_print("You approach the towering spire of the Wizard Tower...")
     chance = random.randint(1, 3)
     if chance == 1:
-        fancy_print("A robed wizard peers down from a balcony and waves you in.")
-        fancy_print("You ascend the spiral staircase and feel arcane energy surge through you.")
-        fancy_print("He waves you over to a mystical scroll and knowledge surges through you...")
+        print(" ")
+        fancy_print("A robed wizard peers down from a balcony and waves you in. You ascend the spiral staircase and feel arcane energy surge through you. He waves you over to a mystical scroll and knowledge surges through you...")
         user.level_up()
     else:
+        print(" ")
         fancy_print("The tower doors remain closed. The wind whispers, but no one answers.")
 
 def other(user):
@@ -600,16 +670,13 @@ def main_loop():
         User.stats()
         map_update(curr_room)
         story(User, curr_room)
-
         room = next(r for r in room_info if r["name"] == curr_room)
         options = room["linked_rooms"]
-
         print("\nWhere will you go?")
+        print("0: Save and Quit")
         for i, opt in enumerate(options, 1):
             print(f"{i}: {opt}")
-        print("0: Save and Quit")
-
-        choice = input("> ").strip()
+        choice = input("Input: ").strip()
         if choice == "0":
             save(User, save_slot, curr_room)
             print("Game saved. Goodbye!")

@@ -1,4 +1,3 @@
-# I AM AWARE OF BUGS WILL BE FIXING LATER TONIGHT MY TIME WHICH WILL BE BEFORE 6am monday EST
 # Elysium-The-duels-of-Arcana
 A text adventure all about battling wizards to death(think pokemon style duels in a magical text adventure world). It's a text based magic spell fighting game with exploration of a set world. 
 
@@ -20,13 +19,6 @@ You need to enter to corresponding number and complete duels to reach lvl 25 bef
 
 <video controls src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/78d714e9f13eb72b13ca43e36af5dcdc15b5b287_2025-10-13_14-52-02.mp4" title="Title"></video>
 ## Installation
-You have 2 options, download the exe if on windows and run the exe file or you can use python and run it yourself (if on linux or mac).
-#### Instructions for exe. 
-# WILL BE ADDED UPON BUG FIX SEE TOP OF PAGE
-1. Locate releases tab on github.
-2. Download the exe file and run it
-3. Play my game! (Note that saves may not work propely as was designed for py)
-#### Instructions for python
 1. Download the github repo by using the code button and either clone or download zip. 
 2. Open in preferred IDE with python 3.13+ (Didn't test any other py versions besides 3.13.8 so attempt older versions but can't guarantee)
 3. Install dependencies
