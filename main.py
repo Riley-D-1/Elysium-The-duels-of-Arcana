@@ -41,21 +41,25 @@ combat_array = [
 # Add all linked rooms to have working map
 # Technically works again and again with diffrent maps so that's cool :D
 room_info = [
-    {"name": "Waterfall", "linked_rooms": ["Duel_arena", "Forrest_1"]},
-    {"name": "Duel_arena", "linked_rooms": ["Waterfall", "City"]},
-    {"name": "Forrest_1", "linked_rooms": ["Waterfall", "Grasslands_4"]},
-    {"name": "Grasslands_4", "linked_rooms": ["Forrest_1", "City"]},
-    {"name": "City", "linked_rooms": ["Grasslands_4", "Grasslands_3", "Duel_arena"]},
-    {"name": "Forrest_3", "linked_rooms": ["Grasslands_3"]},
-    {"name": "Grasslands_3", "linked_rooms": ["Forrest_3", "City"]},
-    {"name": "Grasslands_1", "linked_rooms": ["Village"]},
-    {"name": "Village", "linked_rooms": ["Grasslands_1", "Grasslands_2", "Forrest_2"]},
-    {"name": "Grasslands_2", "linked_rooms": ["Village", "Forrest_2"]},
-    {"name": "Forrest_2", "linked_rooms": ["Grasslands_2", "Village"]},
-    {"name": "Mountain", "linked_rooms": ["Volcano"]},
-    {"name": "Volcano", "linked_rooms": ["Mountain", "Wizard_Tower"]},
-    {"name": "Wizard_Tower", "linked_rooms": ["Volcano"]}
+    {"name": "Waterfall",   "linked_rooms": ["Grasslands_1", "Forrest_1"]},
+    {"name": "Duel_arena",  "linked_rooms": ["Waterfall", "Grasslands_4"]},
+    {"name": "Forrest_1",   "linked_rooms": ["Waterfall", "Grasslands_4", "Grasslands_1"]},
+    {"name": "Grasslands_4","linked_rooms": ["Duel_arena", "Forrest_1", "City", "Forrest_3"]},
+    {"name": "City",        "linked_rooms": ["Grasslands_4"]},
+
+    {"name": "Forrest_3",   "linked_rooms": ["Grasslands_4", "Grasslands_3"]},
+    {"name": "Grasslands_3","linked_rooms": ["Forrest_3", "Forrest_2"]},
+
+    {"name": "Grasslands_1","linked_rooms": ["Forrest_1", "Village"]},
+    {"name": "Village",     "linked_rooms": ["Grasslands_1", "Forrest_2", "Grasslands_2"]},
+    {"name": "Forrest_2",   "linked_rooms": ["Village", "Grasslands_3", "Mountain"]},
+    {"name": "Grasslands_2","linked_rooms": ["Village", "Volcano"]},
+
+    {"name": "Mountain",    "linked_rooms": ["Forrest_2", "Volcano"]},
+    {"name": "Volcano",     "linked_rooms": ["Mountain", "Grasslands_2", "Wizard_Tower"]},
+    {"name": "Wizard_Tower","linked_rooms": ["Volcano"]}
 ]
+
 
 class shopkeeper:
     def __init__(self,name,shop_name):
@@ -63,6 +67,7 @@ class shopkeeper:
         self.shop_name = shop_name   
     def interaction(self,user):
         fancy_print(f"The store {self.shop_name} is filled with magical trinkets but only a few are marked with a price tag...")
+        print("")
         items_to_buy = [
             {"Name":"Experience Potion","cost":25},
             {"Name":"Health Potion", "cost":15},
@@ -73,24 +78,24 @@ class shopkeeper:
             print(f"{i}.{item}")
             i+=1
         
-        print("Type exit or 0 to leave the shop without buying")
-        print("Potions will be drank on purchase")
+        print("Type exit or 0 to leave the shop without buying.")
+        print("Potions will be drank on purchase!")
         temp = input("Type item number to buy or 'exit' to leave: ").strip().lower()
         if temp == "exit" or temp == "0":
             return
         elif temp.isdigit():
             index = int(temp) - 1
-            if temp == 1:
+            if index == 0:
                 item = items_to_buy[index] 
                 print(f"You bought {item['Name']} for {item['cost']}")
                 user.money-=item['cost']
                 user.level_up()
-            elif temp == 2:  
+            elif index == 1:  
                 item = items_to_buy[index] 
                 print(f"You bought {item['Name']} for {item['cost']}")
                 user.money-=item['cost']
                 user.health = 100
-            elif temp == 3:
+            elif index == 2:
                 item = items_to_buy[index] 
                 print(f"You bought {item['Name']} for {item['cost']}")
                 user.money-=item['cost']
@@ -152,7 +157,6 @@ class wizard:
                     self.health += value
             elif effect == "damage":
                 enemy.health -= value
-                enemy.health -= value
             elif effect == "damage_random":
                 if value == 2:
                     enemy.health -= random.randint(1,20) + 5
@@ -163,7 +167,7 @@ class wizard:
                 else:
                     enemy.health -= random.randint(1,100) + 40
             elif effect == "shield":
-                print("Shield of {vaule} applied for 1 round")
+                print(f"Shield of {value} applied for 1 round")
             else:
                 print("Error spell type doesn't exist")
             if player == True:
@@ -182,10 +186,24 @@ class Player(wizard):
             "Mana Potion": 1,
             "Greater Mana Potion": 0
         }
-    def mana_restore(self,val):
-        time.sleep(500)
-        self.mana += val
+    def mana_restore(self):
+        self.mana = min(200, self.mana + 2)
 
+    def combat(self, enemy):
+        self.shield_reset()
+        print("Your Spells:")
+        for i, spell in enumerate(self.learned_spells, 1):
+            print(f"{i}: {spell['name']} (Mana {spell['mana_cost']})")
+        choice = input("Choose a spell: ").strip()
+        if not choice.isdigit() or not (1 <= int(choice) <= len(self.learned_spells)):
+            print("Invalid choice, you fumble your turn!")
+            return
+        spell = self.learned_spells[int(choice) - 1]
+        if self.mana < spell["mana_cost"]:
+            print("Not enough mana!")
+            return
+        self.mana -= spell["mana_cost"]
+        self.cast(spell, enemy, True)
     def stats(self):
         game_array = [
             '+-------------|Info Card|-------------+',
@@ -204,27 +222,27 @@ class Player(wizard):
         self.mana = 200
     
     def level_up(self, level_up_amount=1):
-        self.level += level_up_amount
-        fancy_print(f"{self.name} leveled up to {self.level}")
-        if self.level >= 5:
+        self.lvl += level_up_amount
+        fancy_print(f"{self.name} leveled up to {self.lvl}")
+        if self.lvl >= 5:
             print("You have learned intermediate spells!")
             self.learned_spells += [
                 {"name":"Magic Missile", "effect":"damage", "mana_cost":40, "value":35, "story":"A magical dart whistles through the air and explodes on impact"},
                 {"name":"Fireball", "effect":"damage_random", "mana_cost":50, "value":2, "story":"A fiery glowing ball grows in your hands and flings at your enemy"}
             ]
-        if self.level >= 10:
+        if self.lvl >= 10:
             print("You have learned advanced healing and shielding spells!")
             self.learned_spells += [
                 {"name":"Angelic Empowerment", "effect":"heal", "mana_cost":50, "value":99, "story":"A radiant beam of gold heals all your injuries"},
                 {"name":"Wall of Stone", "effect":"shield", "mana_cost":50, "value":150, "story":"A wall of stone rises to shield you from harm"}
             ]
-        if self.level >= 15:
+        if self.lvl >= 15:
             print("You have learned expert spells!")
             self.learned_spells += [
                 {"name":"Cloud of Daggers", "effect":"damage_random", "mana_cost":50, "value":3, "story":"Hundreds of magical daggers hurtle through the air"},
                 {"name":"Frostblade", "effect":"damage", "mana_cost":60, "value":45, "story":"A blade of cold flies through the air, leaving icy mist"}
             ]
-        if self.level >= 25:
+        if self.lvl >= 25:
             print("You have mastered all spells and become a true champion!")
             self.title = "the master"
             self.learned_spells += [
@@ -295,16 +313,10 @@ def format_(text,width = 35):
     return f"| {text}{' ' * padding} |" # 0 for no negative padding
     # TY SO MUCH MITLES
 
-def format_(text,width = 35):
+def map_format(text, width=71):
     actual_width = wcswidth(text)
     padding = max(width - actual_width, 0)
-    return f"| {text}{' ' * padding} |" # 0 for no negative padding
-    # TY SO MUCH MITLES
-
-def map_format(text, width=71):  # Adjust width to match  map line
-    actual_width = wcswidth(text)
-    padding = max(width - actual_width, 0)
-    return f" {text}{' ' * padding} "
+    return text + " " * padding
 
 def fancy_print(var):
     for char in var:
@@ -352,21 +364,23 @@ def map_update(room):
     # North compass ⬆ and then standard N underneath
     # use {room name goes here} for the core rooms e.g {Main_Village}
     # Have to make the map 
+    # Spaced weirdly to work
     map = [
-        f'+---------------------------------| Map |---------------------------------+',
-        f'|                      {Waterfall}                         {Duel_arena}                       |',
-        f'|                          │                                    │                              |',
-        f'|           {Forrest_1}────┴───────────{Grasslands_4}─────────{City}                          |',
-        f'|                │                {Forrest_3}──────────────────┤                              |',
-        f'|                │                                       {Grasslands_3}                        |',
-        f'|{Grasslands_1}──┤                                             │                              |',
-        f'|                └─────────────┬──────────{Village}────────────┤                              |',
-        f'|                         {Grasslands_2}                     {Forrest_2}                      |',
-        f'|                              │                         ┌─────┘                              |',
-        f'|                         {Mountain}                   │              ⬆                       |',
-        f'|          {Volcano}──────────┘                    {Wizard_Tower}      N                       |',
-        f'+-------------------------------------------------------------------------+',
+        f'+----------------------------------| Map |----------------------------------+',
+        f'|                      {Waterfall}                         {Duel_arena}                        |',
+        f'|                      │                           │                        |',
+        f'|           {Forrest_1}─────────┼───────────{Grasslands_4}─────────────{City}                        |',
+        f'|                      │                 {Forrest_3}────────┤                        |',
+        f'|                      │                          {Grasslands_3}                        |',
+        f'|        {Grasslands_1}────────────┤                           │                        |',
+        f'|                      └─────────────┬───{Village}────────┴─{Forrest_2}                     |',
+        f'|                                    {Grasslands_2}               │                     |',
+        f'|                                    │          ┌─────┘                     |',
+        f'|                                   {Mountain}          │            ⬆              |',
+        f'|                     {Volcano}─────────────┘         {Wizard_Tower}            N              |',
+        f'+---------------------------------------------------------------------------+',
     ]
+
 
     for line in map:
         print(map_format(line))
@@ -394,8 +408,6 @@ def input_handler(options):
         i+=1
     print("fi")
 
-def story(curr_room):
-    val = curr_room
 def story(player,curr_room):
     room = curr_room
     if room == "Waterfall":
@@ -416,7 +428,7 @@ def story(player,curr_room):
         city(player)
     elif room == "Village":
         village(player)
-    elif room == "Mountain_2":
+    elif room == "Mountain":
         fancy_print("You climb higher. The air is thin. You gain 10 mana.")
         player.mana = min(200, player.mana + 10)
     elif room == "Volcano":
@@ -458,24 +470,25 @@ def save(player, save_num, room):
     with open(f"Save{save_num}.txt", "w") as file:
         json.dump(data, file)
 
-def combat(player,bot):
+def combat(player, bot):
     turn = "player"
     while player.health > 0 and bot.health > 0:
         if turn == "player":
-            player.combat()
+            player.combat(bot)
             turn = "bot"
         else:
             bot.attack()
             turn = "player"
-    if bot.health < 0:
+    if bot.health <= 0:
         fancy_print("You win the fight!")
-        money = random.randint(1,200)
+        money = random.randint(1, 200)
         player.money += money
-        fancy_print(f"You earnt {money}")
+        fancy_print(f"You earned {money} gold.")
     else:
-        fancy_print("You loose the fight")
+        fancy_print("You lose the fight...")
         player.health = 100
         player.mana = 100
+
 
 def start_game():
     for val in intro_array:
@@ -518,15 +531,15 @@ def city(user):
     print("2. Speak to the Council")
     choice = input("Choose an action: ").strip()
     if choice == "1":
-        shopkeeper("Elarion", "Arcane Emporium").interaction()
+        shopkeeper("Elarion", "Arcane Emporium").interaction(user)
     elif choice == "2":
         council(user)
     else:
         print("You wander the streets aimlessly.")
 
 def village(user):
-    fancy_print("You return to Obsidinia Village.")
-    print("1. Enter the Duel Arena")
+    fancy_print("You enter Obsidinia Village.")
+    print("\n1. Enter the Duel Arena")
     print("2. Rest at the inn")
     choice = input("Choose an action: ").strip()
     if choice == "1":
@@ -534,21 +547,20 @@ def village(user):
     elif choice :
         print("You rest and recover your strength.")
         user.rest()
-def duel_arena(User,room):
-    fancy_print("You step into the Duel Arena.")
-    fancy_print("Only one will leave victorious...")
+def duel_arena(User):
+    fancy_print("You step into the Duel Arena... Only one will leave victorious...")
     combat(User, challenger(random.randint(1,5)))
     fancy_print("You return to the City.")
-    # Room = city
+    return "city"
 
 def council(user):
-    if user.level >= 25:
-        fancy_print("Elaborate story of truth goes here")
-        fancy_print("YOU WON!")
+    if user.lvl >= 25:
+        fancy_print("The council have trapped a powerful wizard we need more wizards like you to trap him for once and for all. To be continued..") # Bad story but no time
+        print("")
+        print("You won!")
         exit()
     else:
-       fancy_print(f"You are not wise enough to learn the truth yet {user.name}") 
-       fancy_print("Come back when you are level 25")
+       fancy_print(f"You are not wise enough to learn the truth yet {user.name}. Come back when you are level 25")
 
 def wizard_tower(user):
     fancy_print("You approach the towering spire of the Wizard Tower...")
@@ -569,27 +581,44 @@ def other(user):
     else:
         pass
 
+
 def main_loop():
-    save_slot,new_game = start_game()
-    #map_update()
+    save_slot, new_game = start_game()
     clear_terminal()
-    if new_game == True:
+
+    if new_game:
         player_name_temp = input("What would you like to name your character?\nInput: ")
-        player_title_temp = input(f"What would you like the title of your character to be (e.g {player_name_temp} The ALL MIGHTY)?\n Input: ")
-        User = Player(player_name_temp,player_title_temp,0)
-        clear_terminal()
-        User.stats()
-        map_update("Grasslands_1")
+        player_title_temp = input(f"What would you like the title of your character to be (e.g. {player_name_temp} the ALL MIGHTY)?\nInput: ")
+        User = Player(player_name_temp, player_title_temp, 0)
+        curr_room = "Grasslands_1"
     else:
-        #Fetch all of data from save 
-        User = Player(player_name_temp,player_title_temp)
+        User, curr_room = open_save(save_slot)
+
     running = True
     while running:
-        User.mana_restore(1)
-        input()
-        time.sleep(500)
-    
-map = []
+        clear_terminal()
+        User.stats()
+        map_update(curr_room)
+        story(User, curr_room)
+
+        room = next(r for r in room_info if r["name"] == curr_room)
+        options = room["linked_rooms"]
+
+        print("\nWhere will you go?")
+        for i, opt in enumerate(options, 1):
+            print(f"{i}: {opt}")
+        print("0: Save and Quit")
+
+        choice = input("> ").strip()
+        if choice == "0":
+            save(User, save_slot, curr_room)
+            print("Game saved. Goodbye!")
+            running = False
+        elif choice.isdigit() and 1 <= int(choice) <= len(options):
+            curr_room = options[int(choice) - 1]
+        else:
+            print("Invalid choice.")
+            time.sleep(1)
 
 # Core function (Clean isnt it)
 main_loop()
