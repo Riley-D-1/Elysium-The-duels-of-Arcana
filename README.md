@@ -22,7 +22,7 @@ You need to enter to corresponding number and complete duels to reach lvl 25 bef
 
 
 ## Installation
-
+Download the exe in github release 1.0.0 and run the program, it should automatically work and you will be able to play the game. (If a windows smart defeder pops up just click: I understand and continue knowing the risk. I assure that my exe is safe and this is standard for all exe files that dont have an authorised publisher.)
 ## Python option for linux and mac users
 1. Download the github repo by using the code button and either clone or download zip. 
 2. Open in preferred IDE with python 3.13+ (Didn't test any other py versions besides 3.13.8 so attempt older versions but can't guarantee)
