@@ -1,0 +1,1 @@
+{"name": "Dave", "title": "the Average", "money": 0, "health": 100, "mana": 200, "lvl": 2, "room": "City"}

@@ -67,25 +67,26 @@ class shopkeeper:
             return
         elif temp.isdigit():
             index = int(temp) - 1
-            if index == 0:
-                item = items_to_buy[index] 
-                print(f"You bought {item['Name']} for {item['cost']}")
-                user.money-=item['cost']
-                user.level_up()
-            elif index == 1:  
-                item = items_to_buy[index] 
-                print(f"You bought {item['Name']} for {item['cost']}")
-                user.money-=item['cost']
-                user.health = 100
-            elif index == 2:
-                item = items_to_buy[index] 
-                print(f"You bought {item['Name']} for {item['cost']}")
-                user.money-=item['cost']
-                user.mana = 200
+            if user.money >= items_to_buy[index]['cost']:
+                if index == 0:
+                    item = items_to_buy[index] 
+                    print(f"You bought {item['Name']} for {item['cost']}")
+                    user.money-=item['cost']
+                    user.level_up()
+                elif index == 1:  
+                    item = items_to_buy[index] 
+                    print(f"You bought {item['Name']} for {item['cost']}")
+                    user.money-=item['cost']
+                    user.health = 100
+                elif index == 2:
+                    item = items_to_buy[index] 
+                    print(f"You bought {item['Name']} for {item['cost']}")
+                    user.money-=item['cost']
+                    user.mana = 200
+                else:
+                    print("Invalid")
             else:
-                print("Invalid")
-        else:
-            print("Invalid input.")
+                print("Invalid input.")
 
 
 class wizard:
@@ -472,12 +473,29 @@ def open_save(save_num):
         player.mana = data["mana"]
         player.lvl = data["lvl"]
         room = data["room"]
-        player.learned_spells = data("learned_spells", player.learned_spells)
+        player.level_up(0)
         fancy_print(f"Save {save_num} loaded.")
         return player, room
     except FileNotFoundError:
         print("Save file not found.")
         exit()
+
+# Had to do this for exe to work with saves
+def generate_default_saves():
+    dummy_data = {
+    "name": "Dummy",
+    "title": "the test guy",
+    "money": 0,
+    "health": 100,
+    "mana": 200,
+    "lvl": 1,
+    "room": "Grasslands_1"
+    }
+    for i in range(1, 5):
+            path = os.path.join(os.getcwd(), f"Save{i}.txt")
+            if not os.path.exists(path):
+                with open(path, "w") as file:
+                    json.dump(dummy_data, file)
 
 def save(player, save_num, room):
     data = {
@@ -488,8 +506,6 @@ def save(player, save_num, room):
         "mana": player.mana,
         "lvl": player.lvl,
         "room": room,
-        "learned_spells": player.learned_spells
-
     }
     with open(f"Save{save_num}.txt", "w") as file:
         json.dump(data, file)
@@ -539,6 +555,7 @@ def combat(player, bot):
 
 
 def start_game():
+    generate_default_saves()
     for val in intro_array:
         print(val)
     for i in range(1,5):
@@ -593,7 +610,7 @@ def village(user):
     print("3. Exit")
     choice = input("Choose an action: ").strip()
     if choice == "1":
-        duel_arena(user,challenger(random.randint(1,5)))
+        duel_arena(user)
     elif choice == "2" :
         print("You rest and recover your strength.")
         user.rest()
@@ -643,13 +660,7 @@ def wizard_tower(user):
         print(" ")
         fancy_print("The tower doors remain closed. The wind whispers, but no one answers.")
 
-def other(user):
-    outcome = random.randint(1, 4)
-    if outcome == 4:
-        print("A shadowy figure attacks!")
-        combat(user, challenger(3))
-    else:
-        pass
+# Removed unused function
 
 
 def main_loop():

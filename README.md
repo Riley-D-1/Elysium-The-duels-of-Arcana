@@ -15,10 +15,15 @@ You are a young wizard, born into a world that fears what you are. Your journey 
 You will be given all availble actions each round and must use input to navaiget around the mystical world.
 You need to enter to corresponding number and complete duels to reach lvl 25 before searching for the council and finding the truth.
 
-### DEMO
+### DEMO (Click to go to video)
 
-<video controls src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/78d714e9f13eb72b13ca43e36af5dcdc15b5b287_2025-10-13_14-52-02.mp4" title="Title"></video>
+[![Watch the demo](image.png)](https://hc-cdn.hel1.your-objectstorage.com/s/v3/8ab75db092f5cb367eca0c5d136476713f42ea62_2025-10-16_17-08-00.mp4)
+
+
+
 ## Installation
+
+## Python option for linux and mac users
 1. Download the github repo by using the code button and either clone or download zip. 
 2. Open in preferred IDE with python 3.13+ (Didn't test any other py versions besides 3.13.8 so attempt older versions but can't guarantee)
 3. Install dependencies
